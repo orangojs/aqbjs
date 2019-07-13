@@ -3,3 +3,107 @@ export class Query {
   command: string;
   docName: string;
 }
+
+export class ReturnQuery {
+  query: string[];
+  constructor(query: string[] = []) {
+    this.query = query;
+  }
+
+  RETURN(...expression: any[]): StringQuery {
+    this.query.push('RETURN');
+    this.query = this.query.concat(expression);
+    return new StringQuery(this.query);
+  }
+}
+
+export class StringQuery {
+  query: string[];
+  constructor(query: string[]) {
+    this.query = query;
+  }
+
+  toAQL() {
+    return this.query.join(' ');
+  }
+}
+
+// import { Query } from './query';
+
+// export class DocumentQuery {
+//   query: Query;
+//   on: any;
+
+//   constructor(collectionName: string) {
+//     this.query = new Query();
+//     this.query.collection = collectionName;
+//   }
+
+//   collection(name: string): DocumentQuery {
+//     this.query.collection = name;
+//     return this;
+//   }
+
+//   find(docName: string = 'doc'): DocumentQuery {
+//     this.query.command = 'find';
+//     this.query.docName = docName;
+//     return this;
+//   }
+
+//   count(docName: string = ''): DocumentQuery {
+//     console.log(docName);
+//     return this;
+//   }
+
+//   insert(data: any): DocumentQuery {
+//     console.log(data);
+//     return this;
+//   }
+
+//   remove(docName: string = ''): DocumentQuery {
+//     console.log(docName);
+//     return this;
+//   }
+
+//   one(): DocumentQuery {
+//     return this;
+//   }
+
+//   where(filters: any): DocumentQuery {
+//     console.log(filters);
+//     return this;
+//   }
+
+//   skip(value: Number): DocumentQuery {
+//     console.log(value);
+//     return this;
+//   }
+
+//   limit(value: Number): DocumentQuery {
+//     console.log(value);
+//     return this;
+//   }
+
+//   sort(sorts: string): DocumentQuery {
+//     console.log(sorts);
+//     return this;
+//   }
+
+//   set(key: string, value: any): DocumentQuery {
+//     console.log(key, value);
+//     return this;
+//   }
+
+//   return(): DocumentQuery {
+//     console.log(name);
+//     return this;
+//   }
+
+//   many(): string {
+//     let q = `FOR ${this.query.docName} IN ${this.query.collection}`;
+//     if (this.query.command === 'find') {
+//       q = `${q} RETURN ${this.query.docName}`;
+//     }
+//     return q;
+//   }
+// }
