@@ -23,8 +23,11 @@ class GraphQueryBase {
     this.query = query;
   }
 
-  RETURN(...expression: any[]): GraphQueryBase {
+  RETURN(distinct = false, ...expression: any[]): GraphQueryBase {
     this.query.push('RETURN');
+    if (distinct) {
+      this.query.push("DISTINCT")
+    }
     this.query = this.query.concat(expression);
     return new GraphQueryBase(this.query);
   }
@@ -58,7 +61,7 @@ class GraphQueryBase {
   //   return this;
   // }
 
-  toAQL() {
+  toString() {
     return this.query.join(' ');
   }
 }

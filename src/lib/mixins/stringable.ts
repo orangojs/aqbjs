@@ -1,10 +1,7 @@
-class Stringable {
-  query: string[];
-  constructor(query: string[] = []) {
-    this.query = query;
-  }
+import { QueryBase } from './../core/query';
 
-  toString() {
-    return this.query.join('');
+export class Stringable extends QueryBase {
+  toString(): string {
+    return this.query.join(' ');
   }
 }

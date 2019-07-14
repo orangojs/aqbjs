@@ -7,8 +7,8 @@ test('basic no additional params ', t => {
     .FOR('user')
     .IN()
     .OUTBOUND('users/eddie', 'follows')
-    .RETURN('user')
-    .toAQL();
+    .RETURN(false, 'user')
+    .toString();
 
   t.true(aql === 'FOR user OUTBOUND "users/eddie" follows RETURN user');
 });
