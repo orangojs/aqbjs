@@ -1,17 +1,16 @@
+import { Letable } from './mixins/letable';
 import { DocumentQueryInsert } from './document';
 import { QueryInCollection, QueryIntoCollection } from './in';
-import { Stringable } from './mixins/stringable';
 import { QueryBase } from './core/query';
+import { Returnable } from './mixins/returnable';
+import { Stringable } from './mixins/stringable';
+import { applyMixins } from './helpers/applyMixins';
 
-export class QueryOperations extends QueryBase {
-  RETURN(distinct = false, ...expression: any[]): Stringable {
-    this.query.push('RETURN');
-    if (distinct) {
-      this.query.push("DISTINCT")
-    }
-    this.query = this.query.concat(expression);
-    return new Stringable(this.query);
-  }
+export class QueryOperations extends QueryBase implements Letable, Returnable {
+  
+  LET: (variableName: string, expression: any) => Stringable
+
+  RETURN: (distinct, ...expression: any[]) => Stringable
 
   FILTER(condition: string): QueryOperations {
     this.query.push('FILTER', condition);
@@ -34,14 +33,6 @@ export class QueryOperations extends QueryBase {
       throw new Error(`missing value for "limit" param`);
     }
     return this;
-  }
-
-  LET(variableName: string, expression: any): QueryOperations {
-    let value = expression['toAQL']
-      ? '(' + expression.toAQL() + ')'
-      : JSON.stringify(expression);
-    this.query.push(`LET ${variableName} = ${value} \n`);
-    return new QueryOperations(this.query);
   }
 
   COLLECT(variableName: string, expression): QueryOperations {
@@ -72,10 +63,7 @@ export class QueryOperations extends QueryBase {
     return new QueryInCollection(this.query);
   }
 
-  UPDATE_WITH(
-    keyExpression: string,
-    document: string
-  ): QueryInCollection {
+  UPDATE_WITH(keyExpression: string, document: string): QueryInCollection {
     console.log(keyExpression, document);
     return new QueryInCollection(this.query);
   }
@@ -85,10 +73,7 @@ export class QueryOperations extends QueryBase {
     return new QueryInCollection(this.query);
   }
 
-  REPLACE_WITH(
-    keyExpression: string,
-    document: string
-  ): QueryInCollection {
+  REPLACE_WITH(keyExpression: string, document: string): QueryInCollection {
     console.log(keyExpression, document);
     return new QueryInCollection(this.query);
   }
@@ -106,4 +91,7 @@ export class QueryOperations extends QueryBase {
     console.log(searchExpression, insertExpression, updateExpression);
     return new DocumentQueryInsert(this.query);
   }
+
 }
+
+applyMixins(QueryOperations, [Letable, Returnable])
